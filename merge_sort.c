@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 void printArr(int arr[], int arr_size){
     for (int i = 0; i < arr_size; i++){
@@ -8,43 +7,62 @@ void printArr(int arr[], int arr_size){
     printf("\n");
 }
 
-int * mergeSort(int * s_arr1, int size_arr1, int * s_arr2, int size_arr2){
-    int * new_arr = (int*) malloc((size_arr1+size_arr2)*sizeof(int));
+void mergeSortedArrays(int arr[], int low, int mid, int high) {
+    // O(n)
+    int i = low;
+    int j = mid+1;
+    int k = 0;
 
-    int i, j, k;
-    i = j = k = 0;
-    while (j < size_arr2 && i < size_arr1)
-    {
-        if (s_arr1[i] > s_arr2[j]){
-            new_arr[k] = s_arr2[j];
+    int new_arr[high - low];
+
+    while (i <= mid && j < high) { // O(n)
+        if (arr[i] > arr[j]){
+            new_arr[k] = arr[j];
             k++;
             j++;
         }
         else{
-            new_arr[k] = s_arr1[i];
+            new_arr[k] = arr[i];
             k++;
             i++;
         }
     }
-    for (; i < size_arr1; i++){
-        new_arr[k] = s_arr1[i];
+
+    for (; i <= mid; i++){ // O(n)
+        new_arr[k] = arr[i];
         k++;
     }
-    for (; j < size_arr2; j++){
-        new_arr[k] = s_arr2[j];
+    for (; j < high; j++){ // or O(n)
+        new_arr[k] = arr[j];
         k++;
     }
-    return new_arr;
+
+    int h = 0;
+    for (h = 0, i = low; i < high; i++, h++){ // O(n)
+        arr[i] = new_arr[h];
+    }
+}
+
+void mergeSort(int arr[], int l, int h){ // O(logn)
+    // total time complexity : O(nLogn) either worst case or best case.
+    if (h - l < 2) return;
+
+    int mid = (l + h)/2;
+
+    mergeSort(arr, l, mid);
+    mergeSort(arr, mid, h);
+
+    mergeSortedArrays(arr, l, mid-1, h); // O(n)
 }
 
 int main(){
-    // int arr1[] = {1, 4, 12, 22, 44, 55};
-    int arr1[] = {7, 9, 18, 19, 22};
-    int size1 = sizeof(arr1)/sizeof(int);
-    // int arr2[] = {11, 18, 39, 48};
-    int arr2[] = {1, 6, 9, 11};
-    int size2 = sizeof(arr2)/sizeof(int);
-    int * new_ = mergeSort(arr1, size1, arr2, size2);
-    printArr(new_, size1+size2);
+    // int arr1[] = {7, 15, 2, 8, 10};
+    // int arr1[] = {1, 8, 3, 4, 12, 2, 14};
+    // int arr1[] = {12, 2, 7, 21, 27, 15, 25, 4, 8};
+    int arr1[] = {-2147483648, 2147483647, 0, -1, 1};
+    int arr_len = sizeof(arr1)/sizeof(int);
+    printArr(arr1, arr_len);
+    mergeSort(arr1, 0, arr_len);
+    printArr(arr1, arr_len);
     return 0;
 }
